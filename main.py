@@ -31,7 +31,7 @@ bgsImg = pygame.image.load("car.png")
 
 
 
-def highscore(count):
+def escore(count):
 	font = pygame.font.SysFont(None,45)
 	text = font.render("Score : "+str(count),True,black)
 	gameDisplay.blit(text,(30,30))
@@ -139,7 +139,7 @@ def gameloop():
 		
 		car(car_x,car_y) #display car
 		draw_things(thing_startx,thing_starty,car2Img)
-		highscore(count)
+		escore(count)
 
 		if not paus:
 
