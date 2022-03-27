@@ -2,7 +2,7 @@ from itertools import count
 import pygame
 import time
 import random 
-from pygame import K_p, K_s, mixer
+from pygame import  mixer
 
 pygame.init()
 display_width = 800
@@ -57,33 +57,46 @@ def crash(x,y):
 	gameDisplay.blit(crash_img,(x,y))
 	message_display("GAME OVER",64,display_width/2,display_height/2)	
 	pygame.display.update()
-	time.sleep(2)
+	time.sleep(1)
 	gameloop() 
 
-
+def pause():
+	paused = True
+	while paused:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				gameExit = True
+				pygame.quit()
+				quit()
+		message_display("пауза",64,display_width/2,display_height/2)
+		pygame.display.update()
+		keys = pygame.key.get_pressed()
+		if keys[pygame.K_RETURN]:
+			paused = False
+	
+	pygame.display.update()
+	clock.tick(15)
 def gameloop():
 	bg_x1 = (display_width/2)-(360/2)
 	bg_x2 = (display_width/2)-(360/2)
 	bg_y1 = 0
 	bg_y2 = -600
 	bg_speed = 10
-	bg_speed_change = 0
 	car_x = ((display_width / 2) - (car_width / 2))
 	car_y = (display_height - car_height)
 	car_x_change = 0
 	road_start_x =  (display_width/2)-130
 	road_end_x = (display_width/2)+130
-	
+
+
 	thing_startx = random.randrange(road_start_x,road_end_x-car_width)
 	thing_starty = -600
 	thingw = 50
 	thingh = 100
 	thing_speed = 10
 	count=0
-	pau_speed_car = thing_starty
-	paus = False
 	gameExit = False
-	
+
 	while not gameExit:
 
 		for event in pygame.event.get():
@@ -93,26 +106,20 @@ def gameloop():
 				quit()
 			
 			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_UP:
-					paus = True
-					pau_speed_car = thing_speed
-					thing_speed = 0
-			if event.type == pygame.KEYUP:
-				if event.key == pygame.K_SPACE:
-					paus ==False
-					thing_speed = pau_speed_car
-					
-		
-			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_LEFT:
 					car_x_change = -10
 				elif event.key == pygame.K_RIGHT:
 					car_x_change = 10
-			if event.type == pygame.KEYDOWN:
+			keys = pygame.key.get_pressed()
+			if keys[pygame.K_ESCAPE]:
+				pause()
+  
+
+			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
 					car_x_change = 0
-				
-
+			
+			
 		car_x+=car_x_change
 		
 		if car_x > road_end_x-car_width:
@@ -139,16 +146,10 @@ def gameloop():
 		
 		car(car_x,car_y) #display car
 		draw_things(thing_startx,thing_starty,car2Img)
-		highscore(count)
-
-		if not paus:
-
-			count+=1
-		else: count +=0
 		
-		thing_starty += thing_speed
-		if not paus:
-			thing_starty += 10
+		highscore(count)
+		count+=1
+		thing_starty += (thing_speed)+10
 		
 		if thing_starty > display_height:
 			thing_startx = random.randrange(road_start_x,road_end_x-car_width)
@@ -167,6 +168,5 @@ def gameloop():
 		
 		pygame.display.update() # update the screen
 		clock.tick(60) # frame per sec
-
-
+		
 gameloop()
