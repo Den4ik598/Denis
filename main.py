@@ -3,7 +3,7 @@ import time
 import pygame
 import tkinter
 from pygame import mixer
-
+import sys
 pygame.init()
 display_width = 800
 display_height = 600
