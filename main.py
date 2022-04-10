@@ -136,6 +136,7 @@ def menu():
         clock.tick(60)
 
 def spravka():
+    button
 #     будет предоставлена справочная инфомрация
 
 
