@@ -1,8 +1,6 @@
 import random
 import time
 import pygame
-import tkinter
-from pygame import mixer
 import sys
 pygame.init()
 display_width = 800
@@ -115,10 +113,11 @@ button = Button((display_height / 2) - 37, (display_width / 2) - 200)
 
 def menu():
     menu_back = pygame.image.load('menu_back.jpg')
-    pygame.mixer.music.play(-1)
     message_display("Super Tetris-Gonki", (display_height / 2) - 37, (display_width / 2) - 200, 64)
     start_btn = Button(288, 70)
+    pygame.mixer.music.play(-1)
     quit_btn = Button(120, 70)
+    color_smen_btn = Button(288,70)
     spravka_btn = Button(200,70)
     show = True
     while show:
@@ -128,16 +127,52 @@ def menu():
                 quit()
 
         gameDisplay.blit(menu_back, (0,0))
-        start_btn.draw(270,200,'start game',start_game, 36)
+        color_smen_btn.draw(270,200,'color change',color_change,36)
+        start_btn.draw(270,100,'start game',start_game, 36)
         quit_btn.draw(358, 400, 'Quit', quit, 36)
         spravka_btn.draw(315,300,'spravka',spravka,36)
 
         pygame.display.update()
         clock.tick(60)
 
+def sound:
+    #переработать тз с записками, чтобы сделать всплывающее окно
+
+def color_change():
+    while True:
+        change_btn = pygame.mouse.get_pos()
+        gameDisplay.fill("white")
+        change_back_btn = Button(280, 70)
+        change_back_btn.draw(640, 460, 'BAck', None, 36)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                menu()
+
+        pygame.display.update()
+
 def spravka():
-    button
-#     будет предоставлена справочная инфомрация
+    while True:
+        spravka_mouse = pygame.mouse.get_pos()
+        gameDisplay.fill("white")
+        spravka_back_btn = Button(280,70)
+        spravka_back_btn.draw(640,460,'BAck',None,36)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                menu()
+
+
+
+
+        pygame.display.update()
+
+
+
 
 
 def start_game():
