@@ -3,24 +3,26 @@ import time
 import pygame
 import sys
 pygame.init()
+pygame.mixer.init()
 display_width = 800
 display_height = 600
-
+gromk = 1.0
+vivod = gromk*10
 black = (0, 0, 0)
 white = (255, 255, 255)
 green = (0, 255, 0)
 red = (255, 0, 0)
 blue = (0, 0, 255)
-
 car_width = 50
 car_height = 100
-
+on_mus =False
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption("Car Racing")
 
 clock = pygame.time.Clock()
-pygame.mixer.music.load('BADTRIP MUSIC, GREEN ORXNGE, Send 1 - S.X.N.D. N.X.D.E.S.-1.mp3')
-
+mus = pygame.mixer.Sound("BADTRIP MUSIC, GREEN ORXNGE, Send 1 - S.X.N.D. N.X.D.E.S.-1.mp3")
+mus.play(-1)
+print(mus.get_volume)
 carImg = pygame.image.load("car1.png")  # load the car image
 car2Img = pygame.image.load("car2.png")
 bgImg = pygame.image.load("bbg.png")
@@ -110,14 +112,13 @@ class Button:
 
 
 button = Button((display_height / 2) - 37, (display_width / 2) - 200)
-
+on_mus = False
 def menu():
     menu_back = pygame.image.load('menu_back.jpg')
-    message_display("Super Tetris-Gonki", (display_height / 2) - 37, (display_width / 2) - 200, 64)
     start_btn = Button(288, 70)
-    pygame.mixer.music.play(-1)
+    music_btn = Button(200,70)
     quit_btn = Button(120, 70)
-    color_smen_btn = Button(288,70)
+    color_smen_btn = Button(340,70)
     spravka_btn = Button(200,70)
     show = True
     while show:
@@ -127,38 +128,109 @@ def menu():
                 quit()
 
         gameDisplay.blit(menu_back, (0,0))
-        color_smen_btn.draw(270,200,'color change',color_change,36)
+        color_smen_btn.draw(250,200,'color change',color_change,36)
         start_btn.draw(270,100,'start game',start_game, 36)
         quit_btn.draw(358, 400, 'Quit', quit, 36)
         spravka_btn.draw(315,300,'spravka',spravka,36)
+        music_btn.draw(640,500,'Music',Sound_r,36)
+        message_display("Tetris-Gonki", 150, 10, 64)
 
         pygame.display.update()
         clock.tick(60)
+def Vih():
+    global  on_mus
+    on_mus = False
+def Plus():
+    global gromk, vivod
+    print(gromk < 9.0)
+    if gromk <1.0:
+        gromk += 0.001886792452830188679245283018868
+        vivod = gromk*10
+    else:
+        gromk = 1.0
+        vivod = gromk * 10
+    mus.set_volume(gromk)
+def Minus():
+    global gromk,vivod
+    print(gromk < 9.0)
+    if gromk < 0.0:
+        gromk = 0.039
+    elif gromk >0.0:
+        gromk -= 0.001886792452830188679245283018868
+        vivod = gromk*10
 
-def sound:
-    #переработать тз с записками, чтобы сделать всплывающее окно
+    mus.set_volume(gromk)
 
-def color_change():
+def Sound_r():
+    global vivod, on_mus, gromk
+    on_mus = True
     while True:
-        change_btn = pygame.mouse.get_pos()
+        if gromk < 0.0:
+            gromk = 0.001
+            vivod = gromk*10
+        if vivod >= 10:
+            k = 2
+        else:
+            k = 1
+        Sound_btn = pygame.mouse.get_pos()
         gameDisplay.fill("white")
-        change_back_btn = Button(280, 70)
-        change_back_btn.draw(640, 460, 'BAck', None, 36)
+        sound_plus_btn = Button(180,70)
+        sound_minus_btn = Button(180,70)
+        sound_back_btn = Button(150,70)
+        sound_plus_btn.draw(460,300,'Plus',Plus,36)
+        sound_minus_btn.draw(160,300,'Minus',Minus,36)
+        sound_back_btn.draw(1,460, 'back', Vih,36)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                menu()
+                if not on_mus:
+                    menu()
+        message_display(str(vivod)[0:k], (display_height / 2) + 44, (display_width / 2) - 200, 64)
 
         pygame.display.update()
+
+
+def color_change():
+    global on_mus,carImg
+    on_mus = True
+    while True:
+        right_btn = Button(180,70)
+        left_btn = Button(180,70)
+        change_btn = pygame.mouse.get_pos()
+        gameDisplay.fill("white")
+        message_display('change color',235,100,36)
+        change_back_btn = Button(150, 70)
+        left_btn.draw(460,300,'left',Left,36)
+        right_btn.draw(160,300,'Right',Right,36)
+        change_back_btn.draw(1, 460, 'BAck', Vih, 36)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if not on_mus:
+                    menu()
+        gameDisplay.blit(carImg,(380,200))
+        pygame.display.update()
+
+def Left():
+    global carImg
+    carImg = pygame.image.load('car1_version2.png')
+    gameDisplay.blit(carImg,(380,200))
+def Right():
+    global carImg
+    carImg = pygame.image.load("car1.png")
+    gameDisplay.blit(carImg,(380,200))
+
 
 def spravka():
     while True:
         spravka_mouse = pygame.mouse.get_pos()
         gameDisplay.fill("white")
-        spravka_back_btn = Button(280,70)
-        spravka_back_btn.draw(640,460,'BAck',None,36)
+        spravka_back_btn = Button(150,70)
+        spravka_back_btn.draw(1,460,'BAck',None,36)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -198,6 +270,7 @@ def gameloop():
     count = 0
     gameExit = False
     while not gameExit:
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
